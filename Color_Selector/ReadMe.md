@@ -13,6 +13,7 @@ One to select color.
 One to add amount to that color.
 One to subtract amount to that color.
 
+!NB: The steps for adding and subtracting are made in 51 increments. This are done because 255 / 5 = 51. anything else under 10 are using decimals.
 
 To setup this you will need:
 - 1 Teensy 3.5 board
