@@ -59,12 +59,6 @@ void start(){
   delay(2000);
 }
 
-void RGB_COLOR(int BlueColor, int RedColor, int GreenColor){
-analogWrite(BLUE_PIN,BlueColor);
-analogWrite(RED_PIN,RedColor);
-analogWrite(GREEN_PIN,GreenColor);
-}
-
 void loop(){
   if(startUp<1){
     start();
@@ -84,19 +78,13 @@ if(colorSelectorLastState == LOW && colorSelectorState == HIGH){
      switch (colorSelector)
     {
       case 1:
-        Serial.println("Selected red color"); 
-        RGB_COLOR(255,0,0);
-        delay(1000);
+        Serial.println("Selected red color");
         break;
       case 2:
         Serial.println("Selected blue color!");
-        RGB_COLOR(0,0,255);
-        delay(1000);
         break;
       case 3:
         Serial.println("Selected green color!");
-        RGB_COLOR(0,255,0);
-        delay(1000);
         break;
     }
     delay(20);
@@ -166,7 +154,9 @@ if(minusLastState == LOW && minusState == HIGH){
     delay(20);
 }
 
-RGB_COLOR(blue,red,green);
+analogWrite(BLUE_PIN,blue);
+analogWrite(RED_PIN,red);
+analogWrite(GREEN_PIN,green);
 
 plusLastState = plusState;
 minusLastState = minusState;
