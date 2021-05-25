@@ -1,5 +1,5 @@
 
-|======== <b>COLOR SELECTOR<\b> ========|
+|======== <b>COLOR SELECTOR</b> ========|
 <b> Color Selector <\b> are a program made
 for the Teensy 3.5 board with arduino code.
 
