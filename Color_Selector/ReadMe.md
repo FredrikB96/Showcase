@@ -30,3 +30,5 @@ Pins to wire the components to:
 - Pin 35 of Teensy 3.5 to Color selection Button
 - Pin 36 of Teensy 3.5 to Minus Button
 - Pin 37 of Teensy 3.5 to Plus Button
+- 
+![RGB_Circuit](https://user-images.githubusercontent.com/17123698/119645024-dd3ca400-be1d-11eb-9d2e-c0f1d3605e47.png)
