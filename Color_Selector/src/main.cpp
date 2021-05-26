@@ -1,16 +1,5 @@
 #include <Arduino.h>
-
-#define PLUS_BUTTON   37
-#define MINUS_BUTTON    36
-#define COLOR_SELECTOR_BUTTON   35
-
-#define BLUE_PIN  7 
-#define RED_PIN   8 
-#define GREEN_PIN 9 
-
-int blue = 0;
-int red = 0;
-int green = 0;
+#include "header.h"
 
 int plusState = HIGH;
 int minusState = HIGH;
@@ -20,9 +9,7 @@ int plusLastState = LOW;
 int minusLastState = LOW;
 int colorSelectorLastState = LOW;
 
-int colorSelector = 0;
-
-int startUp = 0;
+RGB_COLOR Color = {0,0,0,0};
 
 void setup(){
   Serial.begin(9600);
@@ -36,127 +23,142 @@ void setup(){
   pinMode(GREEN_PIN, OUTPUT);
 
   delay(1000);
+
+  
+  start();
 }
 
+/*
+* Start up function to show that all functions are working
+*/
 void start(){
-  startUp++;
 
+  Color_Light(255,0,0);
   delay(2000);
-  digitalWrite(BLUE_PIN,255);
-  digitalWrite(RED_PIN,0);
-  digitalWrite(GREEN_PIN,0);
+  
+  Color_Light(0,255,0);
+  delay(2000);
 
+  Color_Light(0,0,255);
   delay(2000);
-  digitalWrite(BLUE_PIN,0);
-  digitalWrite(RED_PIN,255);
-  digitalWrite(GREEN_PIN,0);
+}
 
-  delay(2000);
-  digitalWrite(BLUE_PIN,0);
-  digitalWrite(RED_PIN,0);
-  digitalWrite(GREEN_PIN,255);
+/*
+* Function to light up RGB Led based upon values 
+* from input
+*/
+void Color_Light(int blueColor, int redColor, int greenColor){
+/*
+  digitalWrite(BLUE_PIN,redColor);
+  digitalWrite(RED_PIN,greenColor);
+  digitalWrite(GREEN_PIN,blueColor);
+*/
 
-  delay(2000);
+  digitalWrite(BLUE_PIN,blueColor);
+  digitalWrite(RED_PIN,redColor);
+  digitalWrite(GREEN_PIN, greenColor);
+  
 }
 
 void loop(){
-  if(startUp<1){
-    start();
-  }
-
 plusState = digitalRead(PLUS_BUTTON);
 minusState = digitalRead(MINUS_BUTTON);
 colorSelectorState = digitalRead(COLOR_SELECTOR_BUTTON);
 
-if(colorSelectorLastState == LOW && colorSelectorState == HIGH){
-  colorSelector++;
 
-  if(colorSelector>3){
-    colorSelector = 1;
+if(colorSelectorLastState == LOW && colorSelectorState == HIGH){
+  Color.colorSelector++;
+
+  if(Color.colorSelector>3){
+    Color.colorSelector = 1;
   }
 
-     switch (colorSelector)
+     switch (Color.colorSelector)
     {
       case 1:
-        Serial.println("Selected red color");
+        Serial.println("Selected blue color");
+        Color_Light(255,0,0);
+        delay(750);
         break;
       case 2:
-        Serial.println("Selected blue color!");
+        Serial.println("Selected green color!");
+        Color_Light(0,0,255);
+        delay(750);
         break;
       case 3:
-        Serial.println("Selected green color!");
+        Serial.println("Selected red color!");
+        Color_Light(0,255,0);
+        delay(750);
         break;
     }
     delay(20);
 }
 
 if(plusLastState == LOW && plusState == HIGH){
-    switch (colorSelector)
+    switch (Color.colorSelector)
     {
       case 1:
-        blue +=51;
-        Serial.print("RED: "); Serial.println(blue);
+        Color.blue +=51;
+        Serial.print("BLUE: "); Serial.println(Color.blue);
         break;
       case 2:
-        green +=51;
-        Serial.print("BLUE: "); Serial.println(green);
+        Color.green +=51;
+        Serial.print("GREEN: "); Serial.println(Color.green);
         break;
       case 3:
-        red +=51;
-        Serial.print("GREEN: "); Serial.println(red);
+        Color.red +=51;
+        Serial.print("RED: "); Serial.println(Color.red);
         break;
     }
 
-    if(red>255){
-      red = 0;
-      Serial.print("NEW GREEN: "); Serial.println(red);
+    if(Color.red>255){
+      Color.red = 0;
+      Serial.print("NEW RED: "); Serial.println(Color.red);
     }
-    if(blue>255){
-      blue = 0;
-      Serial.print("NEW RED: "); Serial.println(blue);
+    if(Color.blue>255){
+      Color.blue = 0;
+      Serial.print("NEW BLUE: "); Serial.println(Color.blue);
     }
-    if(green>255){
-      green = 0;
-      Serial.print("NEW BLUE: "); Serial.println(green);
+    if(Color.green>255){
+      Color.green = 0;
+      Serial.print("NEW GREEN: "); Serial.println(Color.green);
     }
     delay(20);
 }
 
 if(minusLastState == LOW && minusState == HIGH){
-      switch (colorSelector)
+      switch (Color.colorSelector)
     {
       case 1:
-        blue -=51;
-        Serial.print("RED: "); Serial.println(blue);
+        Color.blue -=51;
+        Serial.print("BLUE: "); Serial.println(Color.blue);
         break;
       case 2:
-        green -=51;
-        Serial.print("BLUE: "); Serial.println(green);
+        Color.green -=51;
+        Serial.print("GREEN: "); Serial.println(Color.green);
         break;
       case 3:
-        red -=51;
-        Serial.print("GREEN: "); Serial.println(red);
+        Color.red -=51;
+        Serial.print("RED: "); Serial.println(Color.red);
         break;
     }
 
-    if(red<0){
-      red = 255;
-      Serial.print("NEW GREEN: "); Serial.println(red);
+    if(Color.red<0){
+      Color.red = 255;
+      Serial.print("NEW RED: "); Serial.println(Color.red);
     }
-    if(blue<0){
-      blue = 255;
-      Serial.print("NEW RED: "); Serial.println(blue);
+    if(Color.blue<0){
+      Color.blue = 255;
+      Serial.print("NEW BLUE: "); Serial.println(Color.blue);
     }
-    if(green<0){
-      green = 255;
-      Serial.print("NEW BLUE: "); Serial.println(green);
+    if(Color.green<0){
+      Color.green = 255;
+      Serial.print("NEW GREEN: "); Serial.println(Color.green);
     }
     delay(20);
 }
 
-analogWrite(BLUE_PIN,blue);
-analogWrite(RED_PIN,red);
-analogWrite(GREEN_PIN,green);
+Color_Light(Color.blue,Color.red,Color.green);
 
 plusLastState = plusState;
 minusLastState = minusState;

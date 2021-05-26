@@ -23,9 +23,9 @@ To setup this you will need:
 - 11+ Wires
 
 Pins to wire the components to:
-- Pin 7 of Teensy 3.5 to Blue pin of RGB LED
-- Pin 8 of Teensy 3.5 to Red pin of RGB LED
-- Pin 9 of Teensy 3.5 to Green pin of RGB LED
+- Pin 9 of Teensy 3.5 to Blue pin of RGB LED
+- Pin 7 of Teensy 3.5 to Red pin of RGB LED
+- Pin 8 of Teensy 3.5 to Green pin of RGB LED
 
 - Pin 35 of Teensy 3.5 to Color selection Button
 - Pin 36 of Teensy 3.5 to Minus Button
