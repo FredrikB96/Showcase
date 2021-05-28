@@ -6,6 +6,8 @@
 #define RED_PIN   7 // Connected to red pin of RGB Ligth
 #define GREEN_PIN 8 // Connected to green pin of RGB light
 
+#define COLOR_DELAY 750 // How long the selcted color are shown. Messured in MS
+
 // Struct holding the values of each color and currently selected color
 typedef struct 
 {
@@ -19,5 +21,5 @@ typedef struct
 *   Function declarations
 */
 void start(); // Function to test each color pin of RGB Ligth
-
 void Color_Light(int blueColor, int redColor, int greenColor); // Function to Light each pin with correct amount of color/value
+int Debounce_Button(int state, int button); // Function to debounce a button
