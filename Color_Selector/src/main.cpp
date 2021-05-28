@@ -9,7 +9,7 @@ int plusLastState = LOW;
 int minusLastState = LOW;
 int colorSelectorLastState = LOW;
 
-RGB_COLOR Color = {0,0,0,0};
+RGB_COLOR Color = {0,0,0,0}; 
 
 void setup(){
   Serial.begin(9600);
@@ -24,12 +24,11 @@ void setup(){
 
   delay(1000);
 
-  
   start();
 }
 
 /*
-* Start up function to show that all functions are working
+* Start up function to show that all colors are working
 */
 void start(){
 
@@ -44,27 +43,38 @@ void start(){
 }
 
 /*
-* Function to light up RGB Led based upon values 
-* from input
+* Function to light up RGB Led based upon values from input
+* @param int blueColor for the amount for the blue color
+* @param int redColor for the amount for the red color
+* @param int greenColor for the amount for the green color
 */
 void Color_Light(int blueColor, int redColor, int greenColor){
-/*
-  digitalWrite(BLUE_PIN,redColor);
-  digitalWrite(RED_PIN,greenColor);
-  digitalWrite(GREEN_PIN,blueColor);
-*/
-
   digitalWrite(BLUE_PIN,blueColor);
   digitalWrite(RED_PIN,redColor);
   digitalWrite(GREEN_PIN, greenColor);
-  
 }
 
-void loop(){
-plusState = digitalRead(PLUS_BUTTON);
-minusState = digitalRead(MINUS_BUTTON);
-colorSelectorState = digitalRead(COLOR_SELECTOR_BUTTON);
+/*
+* Function to debounce the butttons
+* @param int state represents the start readed button
+* @param int button represents the button to debounce
+*/
+int Debounce_Button(int state, int button){
+  delay(10);
 
+  if(digitalRead(button) != state){
+    state = digitalRead(button);
+  }
+
+  return state;
+}
+
+
+void loop(){
+
+plusState =  Debounce_Button(digitalRead(PLUS_BUTTON),PLUS_BUTTON);
+minusState = Debounce_Button(digitalRead(MINUS_BUTTON),MINUS_BUTTON);
+colorSelectorState = Debounce_Button(digitalRead(COLOR_SELECTOR_BUTTON),COLOR_SELECTOR_BUTTON);
 
 if(colorSelectorLastState == LOW && colorSelectorState == HIGH){
   Color.colorSelector++;
@@ -78,20 +88,19 @@ if(colorSelectorLastState == LOW && colorSelectorState == HIGH){
       case 1:
         Serial.println("Selected blue color");
         Color_Light(255,0,0);
-        delay(750);
+        delay(COLOR_DELAY);
         break;
       case 2:
         Serial.println("Selected green color!");
         Color_Light(0,0,255);
-        delay(750);
+        delay(COLOR_DELAY);
         break;
       case 3:
         Serial.println("Selected red color!");
         Color_Light(0,255,0);
-        delay(750);
+        delay(COLOR_DELAY);
         break;
     }
-    delay(20);
 }
 
 if(plusLastState == LOW && plusState == HIGH){
@@ -123,7 +132,6 @@ if(plusLastState == LOW && plusState == HIGH){
       Color.green = 0;
       Serial.print("NEW GREEN: "); Serial.println(Color.green);
     }
-    delay(20);
 }
 
 if(minusLastState == LOW && minusState == HIGH){
@@ -155,7 +163,6 @@ if(minusLastState == LOW && minusState == HIGH){
       Color.green = 255;
       Serial.print("NEW GREEN: "); Serial.println(Color.green);
     }
-    delay(20);
 }
 
 Color_Light(Color.blue,Color.red,Color.green);
@@ -163,5 +170,4 @@ Color_Light(Color.blue,Color.red,Color.green);
 plusLastState = plusState;
 minusLastState = minusState;
 colorSelectorLastState = colorSelectorState;
-delay(15);
 }
