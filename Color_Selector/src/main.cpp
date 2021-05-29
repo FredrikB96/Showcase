@@ -1,13 +1,7 @@
-#include <Arduino.h>
 #include "header.h"
 
-int plusState = HIGH;
-int minusState = HIGH;
-int colorSelectorState = HIGH;
-
-int plusLastState = LOW;
-int minusLastState = LOW;
-int colorSelectorLastState = LOW;
+States current_State = {LOW,LOW,LOW};
+States last_States = {HIGH,HIGH,HIGH};
 
 RGB_COLOR Color = {0,0,0,0}; 
 
@@ -32,14 +26,30 @@ void setup(){
 */
 void start(){
 
-  Color_Light(255,0,0);
+  RGB_Lighter(255,0,0);
   delay(2000);
   
-  Color_Light(0,255,0);
+  RGB_Lighter(0,255,0);
   delay(2000);
 
-  Color_Light(0,0,255);
+  RGB_Lighter(0,0,255);
   delay(2000);
+}
+
+/*
+* Function to read a selected button
+* @param int button represents the button to debounce
+* @return int
+*/
+int16_t button_Reader(uint16_t button){
+ 
+  int16_t state = digitalRead(button);
+  delay(10);
+  if(digitalRead(button) != state){
+    state = digitalRead(button);
+  }
+
+  return state;
 }
 
 /*
@@ -48,62 +58,46 @@ void start(){
 * @param int redColor for the amount for the red color
 * @param int greenColor for the amount for the green color
 */
-void Color_Light(int blueColor, int redColor, int greenColor){
+void RGB_Lighter(uint32_t blueColor, uint32_t redColor, uint32_t greenColor){
   digitalWrite(BLUE_PIN,blueColor);
   digitalWrite(RED_PIN,redColor);
   digitalWrite(GREEN_PIN, greenColor);
 }
 
-/*
-* Function to debounce the butttons
-* @param int state represents the start readed button
-* @param int button represents the button to debounce
-*/
-int Debounce_Button(int state, int button){
-  delay(10);
-
-  if(digitalRead(button) != state){
-    state = digitalRead(button);
-  }
-
-  return state;
-}
-
-
 void loop(){
 
-plusState =  Debounce_Button(digitalRead(PLUS_BUTTON),PLUS_BUTTON);
-minusState = Debounce_Button(digitalRead(MINUS_BUTTON),MINUS_BUTTON);
-colorSelectorState = Debounce_Button(digitalRead(COLOR_SELECTOR_BUTTON),COLOR_SELECTOR_BUTTON);
+current_State.plus =  button_Reader(PLUS_BUTTON);
+current_State.minus = button_Reader(MINUS_BUTTON);
+current_State.ColorSelection = button_Reader(COLOR_SELECTOR_BUTTON);
 
-if(colorSelectorLastState == LOW && colorSelectorState == HIGH){
+if(last_States.ColorSelection == LOW && current_State.plus == HIGH){
   Color.colorSelector++;
 
-  if(Color.colorSelector>3){
-    Color.colorSelector = 1;
+  if(Color.colorSelector>MAX_NUMBER_OF_COLORS){
+    Color.colorSelector = START_COLOR;
   }
 
      switch (Color.colorSelector)
     {
       case 1:
         Serial.println("Selected blue color");
-        Color_Light(255,0,0);
+        RGB_Lighter(255,0,0);
         delay(COLOR_DELAY);
         break;
       case 2:
         Serial.println("Selected green color!");
-        Color_Light(0,0,255);
+        RGB_Lighter(0,0,255);
         delay(COLOR_DELAY);
         break;
       case 3:
         Serial.println("Selected red color!");
-        Color_Light(0,255,0);
+        RGB_Lighter(0,255,0);
         delay(COLOR_DELAY);
         break;
     }
 }
 
-if(plusLastState == LOW && plusState == HIGH){
+if(last_States.plus == LOW && current_State.plus == HIGH){
     switch (Color.colorSelector)
     {
       case 1:
@@ -134,7 +128,7 @@ if(plusLastState == LOW && plusState == HIGH){
     }
 }
 
-if(minusLastState == LOW && minusState == HIGH){
+if(last_States.minus == LOW && current_State.plus == HIGH){
       switch (Color.colorSelector)
     {
       case 1:
@@ -165,9 +159,9 @@ if(minusLastState == LOW && minusState == HIGH){
     }
 }
 
-Color_Light(Color.blue,Color.red,Color.green);
+RGB_Lighter(Color.blue,Color.red,Color.green);
 
-plusLastState = plusState;
-minusLastState = minusState;
-colorSelectorLastState = colorSelectorState;
+last_States.plus = current_State.plus;
+last_States.minus = current_State.minus;
+last_States.ColorSelection = current_State.ColorSelection;
 }
